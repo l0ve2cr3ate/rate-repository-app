@@ -173,4 +173,19 @@ Setting the horizontal prop true will cause the ScrollView component to scroll h
 
 Exercise 10.8. <br>
 Exercise 10.8: the sign in form <br>
-Implement a sign in form to the SignIn component we added earlier in the SignIn.jsx file. The sign in form should include two text fields, one for the username and one for the password. There should also be a button for submitting the form. You don't need to implement a onSubmit callback function, it is enough that the form values are logged using console.log when the form is submitted
+Implement a sign in form to the SignIn component we added earlier in the SignIn.jsx file. The sign in form should include two text fields, one for the username and one for the password. There should also be a button for submitting the form. You don't need to implement a onSubmit callback function, it is enough that the form values are logged using console.log when the form is submitted. <br>
+
+Exercise 10.9. <br>
+Exercise 10.9: validating the sign in form <br>
+Validate the sign in form so that both username and password fields are required. Note that the onSubmit callback implemented in the previous exercise, should not be called if the form validation fails.
+
+The current implementation of the FormikTextInput component should display an error message if a touched field has an error. Emphasize this error message by giving it a red color.
+
+On top of the red error message, give an invalid field a visual indication of an error by giving it a red border color. Remember that if a field has an error, the FormikTextInput component sets the TextInput component's error prop as true. You can use the value of the error prop to attach conditional styles to the TextInput component. <br>
+
+Exercise 10.10. <br>
+Exercise 10.10: a platform specific font >br
+Currently the font family of our application is set to System in the theme configuration located in the theme.js file. Instead of the System font, use a platform specific Sans-serif font. In the Android platform use the Roboto font and in the iOS platform use the Arial font. The default font can be System. <br>
+
+For more info about the exercises of part b React Native Basics, see: <br>
+https://fullstackopen.com/en/part10/react_native_basics <br>
