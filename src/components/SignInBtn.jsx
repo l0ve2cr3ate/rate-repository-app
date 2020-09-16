@@ -6,8 +6,6 @@ import Text from "./Text";
 const styles = StyleSheet.create({
   btnContainer: {
     display: "flex",
-    marginVertical: 15,
-    marginHorizontal: 15,
     backgroundColor: theme.colors.primary,
     borderRadius: 5,
   },
