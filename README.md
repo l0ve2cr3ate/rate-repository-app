@@ -170,3 +170,7 @@ As we are adding more tabs to our app bar, it is a good idea to allow horizontal
 
 Wrap the tabs in the AppBar component's tabs with a ScrollView component.
 Setting the horizontal prop true will cause the ScrollView component to scroll horizontally once the content won't fit the screen. Note that, you will need to add suitable style properties to the ScrollView component so that the tabs will be laid in a row inside the flex container. You can make sure that the app bar can be scrolled horizontally by adding tabs until the last tab won't fit the screen. Just remember to remove the extra tabs once the app bar is working as intended. <br>
+
+Exercise 10.8. <br>
+Exercise 10.8: the sign in form <br>
+Implement a sign in form to the SignIn component we added earlier in the SignIn.jsx file. The sign in form should include two text fields, one for the username and one for the password. There should also be a button for submitting the form. You don't need to implement a onSubmit callback function, it is enough that the form values are logged using console.log when the form is submitted
