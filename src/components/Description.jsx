@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     display: "flex",
     alignItems: "flex-start",
+    flexShrink: 1,
     paddingLeft: 20,
   },
   subheading: {
