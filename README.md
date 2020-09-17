@@ -416,3 +416,24 @@ const showErrror = meta.touched && meta.error;
 
 **Platform specific code** <br>
 The user's platform can be accessed through `Platform.OS` constant, which can be 'android' or 'ios'. You can also use `Platform.select`, which will return the most fitting platform the user is currently running on, choosing from 'ios', 'android', 'native' and 'default'. You can use these to implement platform specific styling. If you want to use platform specific components you could use `Platform.select` or just use `.ios.jsx` or `.android.jsx` file extensions. <br>
+
+### Exercises c. Communicating with the server
+
+In this part data will be fetched from a server. The server can be found in this repository: https://github.com/fullstack-hy2020/rate-repository-api Follow the instructions in the README to setup the server. <br>
+To start the Expo app on mobile device run the command: <br>
+`npm start` and open the Expo app on your mobile and scan the QR code. <br>
+
+Exercise 10.11. <br>
+Exercise 10.11: fetching repositories with Apollo Client <br>
+We want to replace the Fetch API implementation in the useRepositories hook with a GraphQL query. Open the GraphQL Playground at http://localhost:5000/graphql and open the documentation by clicking the docs tab. Look up the repositories query. The query has some arguments, however, all of these are optional so you don't need to specify them. In the GraphQL Playground form a query for fetching the repositories with the fields you are currently displaying in the application. The result will be paginated and it contains the up to first 30 results by default. For now, you can ignore the pagination entirely.
+
+Once the query is working in the GraphQL Playground, use it to replace the Fetch API implementation in the useRepositories hook. This can be achieved using the useQuery hook. The gql template literal tag can be imported from the Apollo Boost as instructed earlier. Consider using the structure recommended earlier for the GraphQL related code. To avoid future caching issues, use the cache-and-network fetch policy in the query. It can be used with the useQuery hook like this:
+
+```javascript
+useQuery(MY_QUERY, {
+  fetchPolicy: "cache-and-network",
+  // Other options
+});
+```
+
+The changes in the useRepositories hook should not affect the RepositoryList component in any way. <br>
