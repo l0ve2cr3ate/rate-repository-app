@@ -3,13 +3,6 @@ import { TextInput as NativeTextInput, StyleSheet } from "react-native";
 import theme from "../theme";
 
 const styles = StyleSheet.create({
-  textInputError: {
-    padding: 10,
-    borderColor: theme.colors.error,
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderRadius: 5,
-  },
   textInput: {
     padding: 10,
     borderColor: theme.colors.inputBorder,
@@ -17,11 +10,15 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderRadius: 5,
   },
+  textInputError: {
+    borderColor: theme.colors.error,
+  },
 });
 
 const TextInput = ({ style, error, ...props }) => {
   const textInputStyle = [
-    error ? styles.textInputError : styles.textInput,
+    styles.textInput,
+    error && styles.textInputError,
     style,
   ];
 
