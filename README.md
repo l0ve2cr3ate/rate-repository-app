@@ -189,3 +189,230 @@ Currently the font family of our application is set to System in the theme confi
 
 For more info about the exercises of part b React Native Basics, see: <br>
 https://fullstackopen.com/en/part10/react_native_basics <br>
+
+### Notes part b. React Native Basics
+
+In this section you will learn how to build user interfaces with RN's core components, how to add style properties to core components, how to transition between views, and how to manage form state. <br>
+
+**Core components** <br>
+React can be used to define components as functions, which receive props and return a tree of React elements. In the browser environment ReactDOM library is used to turn these components into a DOM tree which can be rendered by the browser. React is not bound to an environment, like the browser. Libraries like ReactDOM render a set of predefined components, like DOM elements in the browser. In RN these predefined components are called _core components_. These _core components_ utilize the platform's native components. <br>
+Examples of _core components_:
+
+- `Text` component: only RN component that can have textual children, similar to `<h1>` or `<p>`
+- `View` component: similar to `<div>` element
+- `TextInput` component: text field, similar to `<input>` element
+- `TouchableWithoutFeedback` component: component capturing different press events, similar to `<button>` <br>
+
+Differences between core components and DOM elements: <br>
+
+- Text component is the only RN component that can have textual children, while in React for example `<div>` element can have text in it.
+- Event handlers like `onClick` can be added to basically any element, such as `<div>` and `<button>`, while in RN you have to look into the API docs to know what event handlers a components accepts. `TouchableWithoutFeedback` component for example accepts `onPress` prop (which is similar to `onClick`). <br>
+
+**Manually reloading the app** <br>
+Expo automatically reloads app when you make changes. If this doesn't work, you can manually reload the app by shaking your device or using `Ctrl + M` shortcut on Windows/Linux. This will open up the developer menu, where you can press `Reload`. <br>
+
+**Style** <br>
+In RN most core components accept a `style` prop, which accepts an object with style properties and their values. Property names use camelCase, like `fontSize`. In RN all dimension related values are _unitless_ and represent _density-independent-pixels_. Defining styles directly in style prop is not very readable. Define styles outside the component using `StyleSheet.create()` method, which accepts a single argument: an object consisting of named style objects. `Style` prop also accepts an array of objects. These objects are merged from left to right, so latter style properties take presence. It works recursively. Values evaluating to false are ignored. This makes conditional styling possible: <br>
+
+```javascript
+const textStyles = [
+  styles.text,
+  isBlue && styles.blueText,
+  isBig && styles.bigText,
+];
+```
+
+**Consistent user interface with theming** <br>
+Theming leads to increased consistency and flexibility. You can use variables like `colors.primary` instead of `#fff`. RN does not support global style. You can store your theme values in an object: <br>
+
+```javascript
+const theme = {
+  colors: {
+    textPrimary: "#24292e",
+    textSecondary: "#586069",
+    primary: "#0366d6",
+  },
+  fontSizes: {
+    body: 14,
+    subheading: 16,
+  },
+  fonts: {
+    main: "System",
+  },
+  fontWeights: {
+    normal: "400",
+    bold: "700",
+  },
+};
+
+export default theme;
+```
+
+and use theme in components like this: <br>
+
+```javascript
+import React from "react";
+import { Text as NativeText, StyleSheet } from "react-native";
+
+import theme from "../theme";
+
+const styles = StyleSheet.create({
+  text: {
+    color: theme.colors.textPrimary,
+    fontSize: theme.fontSizes.body,
+    fontFamily: theme.fonts.main,
+    fontWeight: theme.fontWeights.normal,
+  },
+  colorTextSecondary: {
+    color: theme.colors.textSecondary,
+  },
+  colorPrimary: {
+    color: theme.colors.primary,
+  },
+  fontSizeSubheading: {
+    fontSize: theme.fontSizes.subheading,
+  },
+  fontWeightBold: {
+    fontWeight: theme.fontWeights.bold,
+  },
+});
+
+const Text = ({ color, fontSize, fontWeight, style, ...props }) => {
+  const textStyle = [
+    styles.text,
+    color === "textSecondary" && styles.colorTextSecondary,
+    color === "primary" && styles.colorPrimary,
+    fontSize === "subheading" && styles.fontSizeSubheading,
+    fontWeight === "bold" && styles.fontWeightBold,
+    style,
+  ];
+
+  return <NativeText style={textStyle} {...props} />;
+};
+
+export default Text;
+```
+
+**Using flexbox for layout** <br>
+Flexbox is a layout entity consisting of two separate components:
+
+- _flex container_: can be created using `display: 'flex'`, and has flex items as it's direct children.
+- _flex items_: immediate children of _flex container_.
+
+Most important properties of _flex container_: <br>
+
+- `flexDirection`: Direction in which flex items are laid out in container:`row`, `row-reverse`, `column` (default), `column-reverse`. `row` --> positions flex items from left to right. `column` --> positions flex items from top to bottom.
+- `justifyContent`: alignment of flex items along **main** axis.
+- `alignItems`: same as `justifyContent` but for **opposite** axis. <br>
+
+One of the most commonly used properties of _flex item_ is `flexGrow` property. If all flex items have `flexGrow: 1`, they will share available space evenly. If one flex item has `flexGrow: 0` it will only take the space it's content requires, and leave the rest of the space for the other flex items. <br>
+**Note:** In RN the _property names_ are the same as in CSS, except the naming uses camelCase in RN, but the _property values_ (`flex-start`) are exactly the same. <br>
+
+**Routing** <br>
+In RN you can't reference pages with urls typed into browser address bar, nor can you navigate back and forth using the browser's history API. But you can use React Router. Only `BrowserRouter` needs to be replaced with `NativeRouter` from `react-router-native` lib. Using `react-router-native` lib will break Expo's web browser preview. This can be fixed by extending Expo's Webpack config, so it transpiles `react-router-native` lib sources with Babel. For this you will need to install `@expo/webpack-config` lib, and add the following to `webpack.config.js` file in the root directory of your project: <br>
+
+```javascript
+const path = require("path");
+const createExpoWebpackConfigAsync = require("@expo/webpack-config");
+
+module.exports = async function (env, argv) {
+  const config = await createExpoWebpackConfigAsync(env, argv);
+
+  config.module.rules.push({
+    test: /\.js$/,
+    loader: "babel-loader",
+    include: [path.join(__dirname, "node_modules/react-router-native")],
+  });
+
+  return config;
+};
+```
+
+Now you can wrap the `Main` component in the `App.jsx` file with `NativeRouter` and add routes to `Main.jsx` file. <br>
+
+**Form state management** <br>
+Form implementation relies heavily on state management. `useState` can be good enough for small forms, but for more complex forms state management can quite tedious --> `Formik` to the rescue. Formik's main concepts are: `context` and `fields`. The formik context is provided by the `Formik` component that contains the form's state. It contains info of form fields, like value and validation errors. State's fields can be referenced by their name using `useField` hook or `Field` component.
+Initial values for fields are provided to `initalValues` prop as object, with fieldnames as keys and inital values as values. Submit callback is provided through `onSubmit` prop. It gets called when `handleSubmit` function is called **and** there are NO validation errors. <br>
+`useField` hook has one argument: name of the field and returns an array with three values: <br>
+`[field, meta, helpers]`. <br>
+
+- _field_ object contains the value of the field.
+- _meta_ object contains field meta info like possible error message.
+- _helpers_ object contains actions for changing the sate of the field, like _setValue_ function.
+
+**Note**: the component that uses `useField` hook has to be **withtin** Formik's context. In other words, the component has to be a descendant of the Formik component. <br>
+
+Using `useField` hook for multiple text fields in a form causes repetitive code, which can be extracted into a separate component to create a custome TextInput component:
+
+```javascript
+import React from "react";
+import { TextInput as NativeTextInput, StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({});
+
+const TextInput = ({ style, error, ...props }) => {
+  const textInputStyle = [style];
+
+  return <NativeTextInput style={textInputStyle} {...props} />;
+};
+
+export default TextInput;
+```
+
+```javascript
+import React from "react";
+import { StyleSheet } from "react-native";
+import { useField } from "formik";
+
+import TextInput from "./TextInput";
+import Text from "./Text";
+
+const styles = StyleSheet.create({
+  errorText: {
+    marginTop: 5,
+  },
+});
+
+const FormikTextInput = ({ name, ...props }) => {
+  const [field, meta, helpers] = useField(name);
+  const showError = meta.touched && meta.error;
+
+  return (
+    <>
+      <TextInput
+        onChangeText={(value) => helpers.setValue(value)}
+        onBlur={() => helpers.setTouched(true)}
+        value={field.value}
+        error={showError}
+        {...props}
+      />
+      {showError && <Text style={styles.errorText}>{meta.error}</Text>}
+    </>
+  );
+};
+
+export default FormikTextInput;
+```
+
+The `TextInput` let's you reuse your styled TextInput field, while the `FormikTextInput` creates formik bindings in a reusable component, to prevent repetitive code. The `FormikTextInput` can be used inside a component like this:
+
+```javascript
+<FormikTextInput name="mass" placeholder="Weight (kg)" />
+```
+
+**Form Validation** <br>
+Formik has two ways to handle form validation:
+
+- validation function
+- validation schema
+
+_Validation function_ is a function provided for formik components as the value of the `validate` prop. It takes in form values as a argument and returns an object containing possible field specific error messages. <br>
+A _validation schema_ can be created with a validation library `Yup`, and is provided for Formik components as value of `validationSchema` prop. <br>
+By default validation is done when a field's value changes and when `handleSubmit` function is called. If validation fails, the function provided for `onSubmit` prop of Formik component is not called. You can also choose to display an error only when a field is touched (received and lost focus):
+
+```javascript
+const showErrror = meta.touched && meta.error;
+```
+
+**Platform specific code** <br>
+The user's platform can be accessed through `Platform.OS` constant, which can be 'android' or 'ios'. You can also use `Platform.select`, which will return the most fitting platform the user is currently running on, choosing from 'ios', 'android', 'native' and 'default'. You can use these to implement platform specific styling. If you want to use platform specific components you could use `Platform.select` or just use `.ios.jsx` or `.android.jsx` file extensions. <br>
