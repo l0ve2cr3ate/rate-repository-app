@@ -420,7 +420,8 @@ The user's platform can be accessed through `Platform.OS` constant, which can be
 ### Exercises c. Communicating with the server
 
 In this part data will be fetched from a server. The server can be found in this repository: https://github.com/fullstack-hy2020/rate-repository-api Follow the instructions in the README to setup the server. <br>
-To start the Expo app on mobile device run the command: <br>
+To start the Expo app on mobile device: <br>
+Copy the content of `.env.template` file to `.env` file in the root directory, change the ip-address, and run the command: <br>
 `npm start` and open the Expo app on your mobile and scan the QR code. <br>
 
 Exercise 10.11. <br>
@@ -437,3 +438,9 @@ useQuery(MY_QUERY, {
 ```
 
 The changes in the useRepositories hook should not affect the RepositoryList component in any way. <br>
+
+Exercise 10.12. <br>
+Exercise 10.12: environment variables <br>
+Instead of the hardcoded Apollo Server's URL, use an environment variable defined in the .env file when initializing the Apollo Client. You can name the variable for example APOLLO_URI. <br>
+
+Note: My `.env` file is in `.gitignore`. Copy the content of `.env.template` file to `.env` file, and change the ip-address.
