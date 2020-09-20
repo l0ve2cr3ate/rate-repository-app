@@ -9,8 +9,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppBarTab = ({ children, link }) => (
-  <Link to={link} component={TouchableWithoutFeedback} activeOpacity={0.8}>
+const AppBarTab = ({ children, link, onPress }) => (
+  <Link
+    onPress={onPress}
+    to={link}
+    component={TouchableWithoutFeedback}
+    activeOpacity={0.8}
+  >
     <Subheading style={styles.tab} color="textLight">
       {children}
     </Subheading>
