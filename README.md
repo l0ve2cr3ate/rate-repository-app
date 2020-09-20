@@ -443,4 +443,380 @@ Exercise 10.12. <br>
 Exercise 10.12: environment variables <br>
 Instead of the hardcoded Apollo Server's URL, use an environment variable defined in the .env file when initializing the Apollo Client. You can name the variable for example APOLLO_URI. <br>
 
-Note: My `.env` file is in `.gitignore`. Copy the content of `.env.template` file to `.env` file, and change the ip-address.
+Note: My `.env` file is in `.gitignore`. Copy the content of `.env.template` file to `.env` file, and change the ip-address. <br>
+
+Exercises 10.13. - 10.14. <br>
+Exercise 10.13: the sign in form mutation <br>
+The current implementation of the sign in form doesn't do much with the submitted user's credentials. Let's do something about that in this exercise. First, read the rate-repository-api server's authorization documentation and test the provided queries in the GraphQL Playground. If the database doesn't have any users, you can populate the database with some seed data. Instructions for this can be found in the getting started section of the README.
+
+Once you know how the authorization queries are supposed to work, create a file useSignIn.js file in the hooks directory. In that file implement a useSignIn hook that sends the authorize mutation using the useMutation hook. Note that the authorize mutation has a single argument called credentials, which is of type AuthorizeInput. This input type contains username and password fields.
+
+The return value of the hook should be a tuple [signIn, result] where result is the mutations result as it is returned by the useMutation hook and signIn a function that runs the mutation with a { username, password } object argument. Hint: don't pass the mutation function to the return value directly. Instead, return a function that calls the mutation function like this:
+
+```javascript
+const useSignIn = () => {
+  const [mutate, result] = useMutation(/* mutation arguments */);
+
+  const signIn = async ({ username, password }) => {
+    // call the mutate function here with the right arguments
+  };
+
+  return [signIn, result];
+};
+```
+
+Once the hook is implemented, use it in the SignIn component's onSubmit callback for example like this:
+
+```javascript
+const SignIn = () => {
+  const [signIn] = useSignIn();
+
+  const onSubmit = async (values) => {
+    const { username, password } = values;
+
+    try {
+      const { data } = await signIn({ username, password });
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  // ...
+};
+```
+
+This exercise is completed once you can log the user's authorize mutations result after the sign in form has been submitted. The mutation result should contain the user's access token. <br>
+
+Exercise 10.14: storing the acess token step1 <br>
+Now that we can obtain the access token we need to store it. Create a file authStorage.js in the utils directory with the following content:
+
+```javascript
+import { AsyncStorage } from "react-native";
+
+class AuthStorage {
+  constructor(namespace = "auth") {
+    this.namespace = namespace;
+  }
+
+  getAccessToken() {
+    // Get the access token for the storage
+  }
+
+  setAccessToken(accessToken) {
+    // Add the access token to the storage
+  }
+
+  removeAccessToken() {
+    // Remove the access token from the storage
+  }
+}
+
+export default AuthStorage;
+```
+
+Next, implement the methods AuthStorage.getAccessToken, AuthStorage.setAccessToken and AuthStorage.removeAccessToken. Use the namespace variable to give your keys a namespace like we did in the previous example. <br>
+
+Exercises 10.15. - 10.16. <br>
+Exercise 10.15: storing the access token step2 <br>
+Improve the useSignIn hook so that it stores the user's access token retrieved from the authorize mutation. The return value of the hook should not change. The only change you should make to the SignIn component is that you should redirect the user to the reviewed repositories list view after a successful sign in. You can achieve this by using the (useHistory)[https://reacttraining.com/react-router/native/api/Hooks/usehistory] hook and the history's push method. <br>
+
+After the authorize mutation has been executed and you have stored the user's access token to the storage, you should reset the Apollo Client's store. This will clear the Apollo Client's cache and re-execute all active queries. You can do this by using the Apollo Client's resetStore method. You can access the Apollo Client in the useSignIn hook using the useApolloClient hook. Note that the order of the execution is crucial and should be the following:
+
+```javascript
+const { data } = await mutate(/* options */);
+await authStorage.setAccessToken(/* access token from the data */);
+apolloClient.resetStore();
+```
+
+Exercise 10.16: sign out <br>
+The final step in completing the sign in feature is to implement a sign out feature. The authorizedUser query can be used to check the authorized user's information. If the query's result is null, that means that the user is not authorized. Open the GraphQL playground and run the following query:
+
+```javascript
+{
+  authorizedUser {
+    id
+    username
+  }
+}
+```
+
+You will probably end up with the null result. This is because the GraphQL Playground is not authorized, meaning that it doesn't send a valid access token with the request. Revise the authorization documentation and retrieve an access token using the authorize mutation. Use this access token in the Authorization header as instructed in the documentation. Now, run the authorizedUser query again and you should be able to see the authorized user's information. <br>
+
+Open the AppBar component in the AppBar.jsx file where you currently have the tabs "Repositories" and "Sign in". Change the tabs so that if the user is signed in the tab "Sign out" is displayed, otherwise show the "Sign in" tab. You can achieve this by using the authorizedUser query with the useQuery hook. <br>
+
+Pressing the "Sign out" tab should remove the user's access token from the storage and reset the Apollo Client's store with the resetStore method. Calling the resetStore method should automatically re-execute all active queries which means that the authorizedUser query should be re-executed. Note that the order of execution is crucial: access token must be removed from the storage before the Apollo Client's store is reset. <br>
+
+For more info about part c exercises Communicating with the server, see: <br>
+https://fullstackopen.com/en/part10/communicating_with_server
+
+### Notes part c. Communicating with the server
+
+In this part you will learn how to communicate with a server using HTTP requests, how to use Apollo Client in React Native app and how to store data in user's device. You will use a rate-repository api server which uses SQLitedb and provides Apollo GraphQL API + a few REST API endpoints. <br>
+
+**HTTP requests** <br>
+RN provides _fetch API_ for making HTTP requests. It also supports _XMLHTTPReq API_, so it is possible to use third party libraries like `axios`. <br>
+Sending HTTP requests using _fetch API_ can be done using `fetch` function, which takes _url_ of resource as first argument. Default request method is `GET`. Second argument of `fetch` function is `options` object, where you can specify different request methods, request headers, request body, etc. Compared to `axios`, the _fetch API_ operates on a bit lower level. There is not any request/response body serialization and parsing. So you will have to set the `Content-Type` header yourself and use `JSON.stringify` to serialize the request body:
+
+```javascript
+fetch("https://my-api.com/post-end-point", {
+  method: "POST",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    firstParam: "firstValue",
+    secondParam: "secondValue",
+  }),
+});
+```
+
+The `fetch` function returns a Promise which resolves a _response object_. <br>
+**Note:** Error status codes such as 400 and 500 are NOT rejected like in `axios`. <br>
+In case of a JSON formatted response, you can parse the response body using `response.json` method:
+
+```javascript
+const fetchMovies = async () => {
+  const response = await fetch("https://url-to-fetch-data-from.com");
+  const json = await response.json();
+
+  return json;
+};
+```
+
+To access the server, you can't use localhost. You have to replace it with the server's IP-address in the local network, which can be found in Expo Development Tools after `exp://`. <br>
+
+The code for fetching repositories can be extracted to a custom hook, so it can be reused:
+
+```javascript
+import { useState, useEffect } from "react";
+
+const useRepositories = () => {
+  const [repositories, setRepositories] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const fetchRepositories = async () => {
+    setLoading(true);
+
+    const response = await fetch("http:<IP-ADDRESS>:5000/api/repositories");
+    const json = await response.json();
+
+    setLoading(false);
+    setRepositories(json);
+  };
+
+  useEffect(() => {
+    fetchRepositories();
+  }, []);
+
+  return { repositories, loading, refetch: fetchRepositories };
+};
+
+export default useRepositories;
+```
+
+In the component you can use the custom hook like so:
+
+```javascript
+const { respositories } = useRepositories();
+```
+
+**GraphQL and Apollo Client** <br>
+Apollo Client can be used with RN the same way as with React. The graphQL playground can be access from 'http://localhost:5000/graphql'. `Apollo Boost` library is a zero-config way to start using Apollo Client. To connect Apollo Client to Apollo Server:
+
+```javascript
+import ApolloClient from "apollo-boost";
+
+const createApolloClient = () => {
+  return new ApolloClient({
+    uri: "http:<IP-ADDRESS>:5000/graphql",
+  });
+};
+
+export default createApolloClient;
+```
+
+`ApolloProvider context` is needed to provide Apollo Client:
+
+```javascript
+const apolloClient = createApolloClient();
+
+const App = () => {
+  return (
+    <NativeRouter>
+      <ApolloProvider client={apolloClient}>
+        <Main />
+      </ApolloProvider>
+    </NativeRouter>
+  );
+};
+```
+
+**Organizing GraphQL related code** <br>
+One possible way to structure graphQL files: define queries, mutations and fragments in their own files in graphql directory. Store the queries in a variable and import them to use with `useQuery` hook:
+
+```javascript
+const { data, error, loading } = useQuery(GET_REPOSITORIES);
+```
+
+**Evolving the structure** <br>
+Once your app becomes bigger, there might be times when certain files grow to large to manage. Example: component A renders component B and C, while all these components are defined in component A file. You can extract components B and C to their own files in the components directory (first solution), or create a directory A in the components directory and create B and C there. A will also be moved into this directory, and be renamed `index.js` (second solution).
+
+First solution would look like this:
+
+```javascript
+components/
+  A.jsx
+  B.jsx
+  C.jsx
+  ...
+```
+
+Second solution would look like this:
+
+```javascript
+components/
+  A/
+    B.jsx
+    C.jsx
+    index.jsx
+  ...
+```
+
+First solution is great if components B and C are used outside component A or for small projects. The Second file structure is quite modular and doesn't break any imports: Importing a path such as `./A` will match both `A.jsx` and `A/index.jsx`.
+
+**Environment variables** <br>
+RN does not have direct support for environment variables. You can however access Expo config defined in `app.json` file at runtime from JS code. This config can be used to defined and access environment dependent variables. You can access the config by importing `Constants` from `expo-constants`. `Constants.manifest` will contain the config. Change the content of `app.json` to: <br>
+
+```javascript
+export default {
+  name: "app-name",
+};
+```
+
+and rename `app.json` to `app.config.js`.
+Add the environment variable to the config in the `app.config.js`: <br>
+
+```javascript
+extra {
+  env: process.env.ENV
+}
+```
+
+To load environment variables from `.env` file, you need to install `dotenv` library. In the `.env` file in the root of your directory add the environment variable(s): <br>
+`ENV=development` <br>
+and import `dotenv` library in `app.config.js` file: <br>
+`import 'dotenv/config';` <br>
+**Note:** Do not put sensitive data in app's config. <br>
+
+**Storing data on the user's device** <br>
+`AsyncStorage` is RN's version of `localStorage` in the browser. Both API's have 'key-value' storages with similar methods. The _biggest difference_ is that the operations in `AsyncStorage` are asynchronous. `AsyncStorage` operates with string keys in the global namespace, so it is a good idea to create a simple abstraction for it's operations. Because `AsyncStorage` keys are global, it is a good idea to add a _namespace_ for the keys. In this context the namespace is a _prefix_ we provide for the storage abstraction keys. It prevents storage's keys from colliding with other `AsyncStorage` keys.
+The namespace and abstraction could look like this: <br>
+
+```javascript
+import { AsyncStorage } from "react-native";
+
+class ShoppingCartStorage {
+  constructor(namespace = "shoppingCart") {
+    this.namespace = namespace;
+  }
+
+  async getProducts() {
+    const rawProducts = await AsyncStorage.getItem(
+      `${this.namespace}:products`
+    );
+
+    return rawProducts ? JSON.parse(rawProducts) : [];
+  }
+
+  async addProduct(productId) {
+    const currentProducts = await this.getProducts();
+    const newProducts = [...currentProducts, productId];
+
+    await AsyncStorage.setItem(
+      `${this.namespace}:products`,
+      JSON.stringify(newProducts)
+    );
+  }
+
+  async clearProducts() {
+    await AsyncStorage.removeItem(`${this.namespace}:products`);
+  }
+}
+```
+
+You can use it like this in components:
+
+```javascript
+const shoppingCart = new ShoppingCartStorage("shoppingCart");
+await shoppingCart.addProduct("new-product");
+```
+
+Items can be added to storage with `AsyncStorage.setItem()` method, with as first argument the item's key, and as second argument it's value. The value must be a string. You can use `JSON.stringify` to serialize non-string values. To get items from `AsyncStorage` use `.AsyncStorage.getItem()` method with item's key as argument. To remove an item use `AsyncStorage.remove()` method with key from item you want to remove. <br>
+
+**Enhancing Apollo Client's requests** <br>
+Initialize async storage in the App component: <br>
+
+```javascript
+const authStorage = new AuthStorage();
+const apolloClient = createApolloClient(authStorage);
+```
+
+Storage instance is provided to createApolloClient function so access token can be send to Apollo Server with requests. Apollo Server expects the access token to be present in the `Authorization header` in the format `Bearer <ACCESS_TOKEN>`: <br>
+
+```javascript
+const createApolloClient = (authStorage) => {
+  return new ApolloClient({
+    request: async (operation) => {
+      try {
+        const accessToken = await authStorage.getAccessToken();
+        operation.setContext({
+          headers: {
+            authorization: accessToken ? `Bearer ${accessToken}` : "",
+          },
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    // uri and other options...
+  });
+};
+```
+
+**Using React Context for dependency injection** <br>
+You can use React Context to have access to the storage instance in `useSignIn` hook. After creating a context and wrapping the Main component in the App in the context provider, all components rendered by the Main component will have access to `AuthStorageContext` with `useContext` hook <br>
+
+Create the context: <br>
+
+```javascript
+const AuthStorageContext = React.createContext();
+
+export default AuthStorageContext;
+```
+
+Wrap the Main component in the context provider (AuthStorageContext.Provider): <br>
+
+```javascript
+const App = () => {
+  return (
+    <NativeRouter>
+      <ApolloProvider client={apolloClient}>
+        <AuthStorageContext.Provider value={authStorage}>
+          <Main />
+        </AuthStorageContext.Provider>
+      </ApolloProvider>
+    </NativeRouter>
+  );
+};
+```
+
+Access the storage instance: <br>
+
+```javascript
+const useSignIn = () => {
+  const authStorage = useContext(AuthStorageContext);
+  // ...
+};
+```
