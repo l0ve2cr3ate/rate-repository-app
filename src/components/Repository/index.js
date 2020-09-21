@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/react-hooks";
 import React from "react";
 import { useParams } from "react-router-native";
 import { GET_REPOSITORY } from "../../graphql/queries";
-import RepositoryItem from "../RepositoryList/RepositoryItem";
+import RepositoryItem from "../RepositoryItem";
 import { formatNumbers } from "../RepositoryList/RepositoryListContainer";
 
 const Repository = () => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import Button from "../Button";
 import FormikTextInput from "../FormikTextInput";
-import SignInBtn from "./SignInBtn";
 
 const styles = StyleSheet.create({
   textInputContainer: {
@@ -15,7 +15,7 @@ const SignInForm = ({ onSubmit }) => (
     <View style={styles.textInputContainer}>
       <FormikTextInput name="password" placeholder="Password" secureTextEntry />
     </View>
-    <SignInBtn onSubmit={onSubmit} />
+    <Button onPress={onSubmit}>Sign in</Button>
   </View>
 );
 

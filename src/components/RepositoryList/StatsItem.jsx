@@ -8,11 +8,14 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
+  subheading: {
+    marginBottom: 5,
+  },
 });
 
 const StatsItem = ({ count, title, testID }) => (
   <View style={styles.statsItemContainer}>
-    <Subheading color="textPrimary" testID={testID}>
+    <Subheading style={styles.subheading} color="textPrimary" testID={testID}>
       {count}
     </Subheading>
     <BodyText color="textSecondary">{title}</BodyText>

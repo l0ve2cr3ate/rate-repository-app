@@ -1,17 +1,11 @@
 import React from "react";
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import * as Linking from "expo-linking";
-import theme from "../../theme";
-import Stats from "./Stats";
-import Description from "./Description";
+import theme from "../theme";
+import Stats from "./RepositoryList/Stats";
+import Description from "./RepositoryList/Description";
 import { Link } from "react-router-native";
-import Text from "../Text";
+import Button from "./Button";
 
 const styles = StyleSheet.create({
   container: {
@@ -26,13 +20,7 @@ const styles = StyleSheet.create({
     borderRadius: 7,
   },
   btnContainer: {
-    display: "flex",
-    backgroundColor: theme.colors.primary,
-    borderRadius: 5,
-  },
-  githubBtn: {
-    padding: 15,
-    alignSelf: "center",
+    marginTop: 10,
   },
 });
 
@@ -75,15 +63,7 @@ const RepositoryItem = ({
         />
         {detailView && (
           <View style={styles.btnContainer}>
-            <TouchableWithoutFeedback onPress={openGithub}>
-              <Text
-                color="textLight"
-                fontWeight="bold"
-                style={styles.githubBtn}
-              >
-                Open in GitHub
-              </Text>
-            </TouchableWithoutFeedback>
+            <Button onPress={openGithub}>Open in GitHub</Button>
           </View>
         )}
       </View>
