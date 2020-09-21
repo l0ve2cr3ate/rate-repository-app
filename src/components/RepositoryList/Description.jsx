@@ -38,9 +38,11 @@ const Description = ({ fullName, description, language }) => (
       {description}
     </BodyText>
 
-    <BodyText color="textLight" style={styles.language} testID="language">
-      {language}
-    </BodyText>
+    <View style={styles.language}>
+      <BodyText color="textLight" testID="language">
+        {language}
+      </BodyText>
+    </View>
   </View>
 );
 
