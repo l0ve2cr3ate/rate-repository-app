@@ -1,7 +1,6 @@
 import React from "react";
-import { FlatList, View, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import RepositoryItem from "./RepositoryItem";
-import useRepositories from "../hooks/useRepositories";
 
 const styles = StyleSheet.create({
   separator: {
@@ -11,7 +10,7 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const formatNumbers = (num) => {
+export const formatNumbers = (num) => {
   return num > 999 ? (num / 1000).toFixed(1) + "k" : num;
 };
 
@@ -28,9 +27,7 @@ const renderItem = ({ item }) => (
   />
 );
 
-const RepositoryList = () => {
-  const { repositories } = useRepositories();
-
+const RepositoryListContainer = ({ repositories }) => {
   // Get the nodes from the edges array
   const repositoryNodes = repositories
     ? repositories?.edges.map((edge) => edge.node)
@@ -46,4 +43,4 @@ const RepositoryList = () => {
   );
 };
 
-export default RepositoryList;
+export default RepositoryListContainer;

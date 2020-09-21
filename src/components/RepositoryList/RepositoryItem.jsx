@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
-import theme from "../theme";
+import theme from "../../theme";
 import Stats from "./Stats";
 import Description from "./Description";
 
