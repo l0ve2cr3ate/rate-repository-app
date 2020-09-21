@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-native";
 import * as yup from "yup";
-import { useSignIn } from "../hooks/useSignIn";
+import { useSignIn } from "../../hooks/useSignIn";
 
 import SignInContainer from "./SignInContainer";
 

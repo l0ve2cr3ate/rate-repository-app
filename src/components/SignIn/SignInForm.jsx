@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import FormikTextInput from "./FormikTextInput";
+import FormikTextInput from "../FormikTextInput";
 import SignInBtn from "./SignInBtn";
 
 const styles = StyleSheet.create({
