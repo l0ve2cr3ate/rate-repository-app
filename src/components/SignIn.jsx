@@ -1,23 +1,9 @@
-import { Formik } from "formik";
 import React from "react";
-import { StyleSheet, View } from "react-native";
 import { useHistory } from "react-router-native";
 import * as yup from "yup";
 import { useSignIn } from "../hooks/useSignIn";
-import theme from "../theme";
-import SignInForm from "./SignInForm";
 
-const styles = StyleSheet.create({
-  formContainer: {
-    backgroundColor: theme.colors.backgroundLight,
-    padding: 15,
-  },
-});
-
-const initialValues = {
-  username: "",
-  password: "",
-};
+import SignInContainer from "./SignInContainer";
 
 const validationSchema = yup.object().shape({
   username: yup.string().required("Username is required"),
@@ -42,15 +28,7 @@ const SignIn = () => {
   };
 
   return (
-    <View style={styles.formContainer}>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-      >
-        {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
-      </Formik>
-    </View>
+    <SignInContainer onSubmit={onSubmit} validationSchema={validationSchema} />
   );
 };
 
