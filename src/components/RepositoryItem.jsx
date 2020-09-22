@@ -12,6 +12,9 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: theme.colors.backgroundLight,
   },
+  listHeader: {
+    marginBottom: 10,
+  },
   infoContainer: {
     display: "flex",
     flexDirection: "row",
@@ -43,7 +46,7 @@ const RepositoryItem = ({
 
   return (
     <Link to={`/repository/${id}`} component={TouchableOpacity}>
-      <View style={styles.container}>
+      <View style={[styles.container, detailView && styles.listHeader]}>
         <View style={styles.infoContainer}>
           <Image
             style={styles.image}
