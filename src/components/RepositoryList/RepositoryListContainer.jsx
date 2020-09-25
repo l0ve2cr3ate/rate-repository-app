@@ -1,10 +1,15 @@
 import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
+
 import RepositoryItem from "../RepositoryItem";
+import Dropdown from "./Dropdown";
 
 const styles = StyleSheet.create({
   separator: {
     height: 10,
+  },
+  listHeader: {
+    zIndex: 10,
   },
 });
 
@@ -28,7 +33,7 @@ const renderItem = ({ item }) => (
   />
 );
 
-const RepositoryListContainer = ({ repositories }) => {
+const RepositoryListContainer = ({ repositories, onPress, sort }) => {
   // Get the nodes from the edges array
   const repositoryNodes = repositories
     ? repositories?.edges.map((edge) => edge.node)
@@ -40,6 +45,8 @@ const RepositoryListContainer = ({ repositories }) => {
       ItemSeparatorComponent={ItemSeparator}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
+      ListHeaderComponent={() => <Dropdown onPress={onPress} sort={sort} />}
+      ListHeaderComponentStyle={styles.listHeader}
     />
   );
 };

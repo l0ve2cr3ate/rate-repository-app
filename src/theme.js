@@ -9,6 +9,7 @@ const theme = {
     appBar: "#24292e",
     error: "#d73a4a",
     inputBorder: "#c8c8c8",
+    backdrop: "rgba(92,92,92,0.6)",
   },
   fontSizes: {
     body: 14,
