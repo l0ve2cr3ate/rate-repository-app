@@ -1,35 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDebounce } from "use-debounce";
 import useRepositories from "../../hooks/useRepositories";
 import RepositoryListContainer from "./RepositoryListContainer";
 
 const RepositoryList = () => {
   const [sort, setSort] = React.useState();
+  const [variables, setVariables] = React.useState();
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
 
-  let data;
+  const { repositories } = useRepositories(variables);
 
-  switch (sort) {
-    case "Latest repositories":
-      data = useRepositories("CREATED_AT", "DESC");
-      break;
-    case "Highest rated repositories":
-      data = useRepositories("RATING_AVERAGE", "DESC");
-      break;
-    case "Lowest rated repositories":
-      data = useRepositories("RATING_AVERAGE", "ASC");
-      break;
-    default:
-      data = useRepositories();
-  }
+  const onChangeSearch = (query) => setSearchQuery(query);
+  const onPress = (variables, sortBy) => {
+    setSort(sortBy);
+    setVariables(variables);
+  };
 
-  const repositories = data?.repositories;
-
-  const onPress = (value) => setSort(value);
+  useEffect(() => {
+    setVariables({ searchKeyword: debouncedSearchQuery });
+  }, [debouncedSearchQuery]);
 
   return (
     <RepositoryListContainer
       sort={sort}
       onPress={onPress}
       repositories={repositories}
+      searchQuery={searchQuery}
+      onChangeSearch={onChangeSearch}
     />
   );
 };

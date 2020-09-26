@@ -42,8 +42,24 @@ const Dropdown = ({ onPress, sort }) => {
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
-
   const closeMenu = () => setVisible(false);
+
+  const getSortVariables = (value) => {
+    let variables;
+    switch (value) {
+      case "Latest repositories":
+        variables = { orderBy: "CREATED_AT", orderDirection: "DESC" };
+        return variables;
+      case "Highest rated repositories":
+        variables = { orderBy: "RATING_AVERAGE", orderDirection: "DESC" };
+        return variables;
+      case "Lowest rated repositories":
+        variables = { orderBy: "RATING_AVERAGE", orderDirection: "ASC" };
+        return variables;
+      default:
+        return variables;
+    }
+  };
 
   return (
     <>
@@ -70,30 +86,33 @@ const Dropdown = ({ onPress, sort }) => {
           <Divider />
           <Menu.Item
             style={styles.menuItem}
-            onPress={(e) =>
-              onPress(
+            onPress={(e) => {
+              const value =
                 e._dispatchInstances.memoizedProps.children[0].props.children[1]
-                  .props.children.props.children
-              )
-            }
+                  .props.children.props.children;
+              onPress(getSortVariables(value), value);
+              closeMenu();
+            }}
             title="Latest repositories"
           />
           <Menu.Item
-            onPress={(e) =>
-              onPress(
+            onPress={(e) => {
+              const value =
                 e._dispatchInstances.memoizedProps.children[0].props.children[1]
-                  .props.children.props.children
-              )
-            }
+                  .props.children.props.children;
+              onPress(getSortVariables(value), value);
+              closeMenu();
+            }}
             title="Highest rated repositories"
           />
           <Menu.Item
-            onPress={(e) =>
-              onPress(
+            onPress={(e) => {
+              const value =
                 e._dispatchInstances.memoizedProps.children[0].props.children[1]
-                  .props.children.props.children
-              )
-            }
+                  .props.children.props.children;
+              onPress(getSortVariables(value), value);
+              closeMenu();
+            }}
             title="Lowest rated repositories"
           />
         </Menu>
