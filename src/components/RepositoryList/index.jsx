@@ -9,12 +9,18 @@ const RepositoryList = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
 
-  const { repositories } = useRepositories(variables);
+  const { repositories, fetchMore } = useRepositories({
+    first: 20,
+    ...variables,
+  });
 
   const onChangeSearch = (query) => setSearchQuery(query);
   const onPress = (variables, sortBy) => {
     setSort(sortBy);
     setVariables(variables);
+  };
+  const onEndReach = () => {
+    fetchMore();
   };
 
   useEffect(() => {
@@ -28,6 +34,7 @@ const RepositoryList = () => {
       repositories={repositories}
       searchQuery={searchQuery}
       onChangeSearch={onChangeSearch}
+      onEndReach={onEndReach}
     />
   );
 };
