@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import Constants from "expo-constants";
-
-import theme from "../theme";
-import AppBarTab from "./AppBarTab";
 import { useApolloClient, useQuery } from "@apollo/react-hooks";
-import { GET_AUTHORIZED_USER } from "../graphql/queries";
-import AuthStorageContext from "../contexts/AuthStorageContext";
+import theme from "../../theme";
+import AppBarTab from "./AppBarTab";
+import { GET_AUTHORIZED_USER } from "../../graphql/queries";
+import AuthStorageContext from "../../contexts/AuthStorageContext";
 
 const styles = StyleSheet.create({
   container: {

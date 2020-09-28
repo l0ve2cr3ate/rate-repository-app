@@ -5,7 +5,7 @@ import { useParams } from "react-router-native";
 import { GET_REPOSITORY } from "../../graphql/queries";
 import ItemSeparator from "../ItemSeparator";
 import RepositoryInfo from "./RepositoryInfo";
-import ReviewItem from "./ReviewItem";
+import ReviewItem from "../ReviewItem";
 
 const SingleRepository = () => {
   const { id } = useParams();

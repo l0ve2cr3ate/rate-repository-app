@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Link } from "react-router-native";
 import theme from "../../theme";
 import Button from "../Button";
-import ReviewItem from "../SingleRepository/ReviewItem";
+import ReviewItem from "../ReviewItem";
 
 const styles = StyleSheet.create({
   btnContainer: {

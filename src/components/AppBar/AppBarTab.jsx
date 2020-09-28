@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { Link } from "react-router-native";
-import Subheading from "./Subheading";
+import Subheading from "../Subheading";
 
 const styles = StyleSheet.create({
   tab: {

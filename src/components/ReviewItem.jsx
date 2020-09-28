@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { format, parseISO } from "date-fns";
-import theme from "../../theme";
-import BodyText from "../BodyText";
-import Subheading from "../Subheading";
+import theme from "../theme";
+import BodyText from "./BodyText";
+import Subheading from "./Subheading";
 
 const width = 50;
 const height = width;

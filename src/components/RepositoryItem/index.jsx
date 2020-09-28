@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import * as Linking from "expo-linking";
-import theme from "../theme";
-import Stats from "./RepositoryList/Stats";
-import Description from "./RepositoryList/Description";
+import theme from "../../theme";
+import Stats from "./Stats";
+import Description from "./Description";
 import { Link } from "react-router-native";
-import Button from "./Button";
+import Button from "../Button";
 
 const styles = StyleSheet.create({
   container: {
