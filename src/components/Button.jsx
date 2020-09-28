@@ -15,11 +15,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const Button = ({ children, onPress }) => {
+const Button = ({ children, onPress, style, outerBtnStyle }) => {
   return (
-    <View style={styles.btnContainer}>
+    <View style={[styles.btnContainer, outerBtnStyle]}>
       <TouchableWithoutFeedback onPress={onPress}>
-        <Text color="textLight" fontWeight="bold" style={styles.btn}>
+        <Text color="textLight" fontWeight="bold" style={[styles.btn, style]}>
           {children}
         </Text>
       </TouchableWithoutFeedback>

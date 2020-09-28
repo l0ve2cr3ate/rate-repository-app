@@ -63,8 +63,6 @@ const SingleRepository = () => {
   const repository = data?.repository;
   const reviews = data?.repository.reviews.edges;
 
-  if (loading) return null;
-
   return (
     <FlatList
       data={reviews}
