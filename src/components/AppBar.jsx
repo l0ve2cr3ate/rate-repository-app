@@ -5,7 +5,7 @@ import Constants from "expo-constants";
 import theme from "../theme";
 import AppBarTab from "./AppBarTab";
 import { useApolloClient, useQuery } from "@apollo/react-hooks";
-import { AUTHORIZED_USER } from "../graphql/queries";
+import { GET_AUTHORIZED_USER } from "../graphql/queries";
 import AuthStorageContext from "../contexts/AuthStorageContext";
 
 const styles = StyleSheet.create({
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
-  const { data } = useQuery(AUTHORIZED_USER);
+  const { data } = useQuery(GET_AUTHORIZED_USER);
 
   const authStorage = useContext(AuthStorageContext);
   const apolloClient = useApolloClient();
@@ -38,6 +38,7 @@ const AppBar = () => {
         {data?.authorizedUser ? (
           <>
             <AppBarTab link="/create-review">Create a review</AppBarTab>
+            <AppBarTab link="/reviews">My reviews</AppBarTab>
             <AppBarTab onPress={logout} link="/signin">
               Sign out
             </AppBarTab>

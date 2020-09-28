@@ -39,20 +39,34 @@ const styles = StyleSheet.create({
   },
 });
 
-const ReviewItem = ({ review }) => {
+const ReviewItem = ({
+  username,
+  rating,
+  createdAt,
+  text,
+  userReviews,
+  repositoryName,
+}) => {
   return (
     <View style={styles.reviewItemContainer}>
       <View style={styles.ratingCircle}>
-        <Subheading color="primary">{review.node.rating}</Subheading>
+        <Subheading color="primary">{rating}</Subheading>
       </View>
       <View style={styles.reviewItemDescription}>
-        <Subheading style={styles.username} color="textPrimary">
-          {review.node.user.username}
-        </Subheading>
+        {userReviews ? (
+          <Subheading style={styles.username} color="textPrimary">
+            {repositoryName}
+          </Subheading>
+        ) : (
+          <Subheading style={styles.username} color="textPrimary">
+            {username}
+          </Subheading>
+        )}
+
         <BodyText style={styles.date} color="textSecondary">
-          {format(parseISO(review.node.createdAt), "dd.MM.yyyy")}
+          {format(parseISO(createdAt), "dd.MM.yyyy")}
         </BodyText>
-        <BodyText color="textPrimary">{review.node.text}</BodyText>
+        <BodyText color="textPrimary">{text}</BodyText>
       </View>
     </View>
   );

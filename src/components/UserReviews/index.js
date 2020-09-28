@@ -1,43 +1,42 @@
 import { useQuery } from "@apollo/react-hooks";
 import React from "react";
 import { FlatList } from "react-native";
-import { useParams } from "react-router-native";
-import { GET_REPOSITORY } from "../../graphql/queries";
+import { GET_AUTHORIZED_USER } from "../../graphql/queries";
 import ItemSeparator from "../ItemSeparator";
-import RepositoryInfo from "./RepositoryInfo";
-import ReviewItem from "./ReviewItem";
+import ReviewItem from "../SingleRepository/ReviewItem";
 
-const SingleRepository = () => {
-  const { id } = useParams();
-
-  const { loading, data, fetchMore } = useQuery(GET_REPOSITORY, {
+const UserReviews = () => {
+  const { data, loading, fetchMore } = useQuery(GET_AUTHORIZED_USER, {
     fetchPolicy: "cache-and-network",
-    variables: { id, first: 20 },
+    variables: {
+      includeReviews: true,
+      first: 20,
+    },
   });
 
   const handleFetchMore = () => {
     const canFetchMore =
-      !loading && data && data.repository.reviews.pageInfo.hasNextPage;
+      !loading && data && data.authorizedUser.reviews.pageInfo.hasNextPage;
 
     if (!canFetchMore) {
       return;
     }
 
     fetchMore({
-      query: GET_REPOSITORY,
+      query: GET_AUTHORIZED_USER,
       variables: {
-        after: data.repository.reviews.pageInfo.endCursor,
-        id,
+        includeReviews: true,
+        after: data.authorizedUser.reviews.pageInfo.endCursor,
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         const nextResult = {
-          repository: {
-            ...fetchMoreResult.repository,
+          authorizedUser: {
+            ...fetchMoreResult.authorizedUser,
             reviews: {
-              ...fetchMoreResult.repository.reviews,
+              ...fetchMoreResult.authorizedUser.reviews,
               edges: [
-                ...previousResult.repository.reviews.edges,
-                ...fetchMoreResult.repository.reviews.edges,
+                ...previousResult.authorizedUser.reviews.edges,
+                ...fetchMoreResult.authorizedUser.reviews.edges,
               ],
             },
           },
@@ -51,31 +50,27 @@ const SingleRepository = () => {
     handleFetchMore();
   };
 
+  const reviews = data?.authorizedUser.reviews.edges;
+
   const renderItem = ({ item }) => (
     <ReviewItem
-      username={item.node.user.username}
+      repositoryName={item.node.repository.fullName}
       rating={item.node.rating}
       text={item.node.text}
       createdAt={item.node.createdAt}
+      userReviews={true}
     />
   );
-
-  const repository = data?.repository;
-  const reviews = data?.repository.reviews.edges;
-
-  if (loading) return null;
 
   return (
     <FlatList
       data={reviews}
       renderItem={renderItem}
       keyExtractor={({ node: { id } }) => id}
-      ListHeaderComponent={() => <RepositoryInfo repository={repository} />}
       ItemSeparatorComponent={ItemSeparator}
       onEndReached={onEndReach}
       onEndReachedThreshold={0.5}
     />
   );
 };
-
-export default SingleRepository;
+export default UserReviews;

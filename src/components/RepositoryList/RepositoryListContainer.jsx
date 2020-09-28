@@ -1,18 +1,14 @@
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
+import ItemSeparator from "../ItemSeparator";
 import RepositoryItem from "../RepositoryItem";
 import RepositoryListHeader from "./RepositoryListHeader";
 
 const styles = StyleSheet.create({
-  separator: {
-    height: 10,
-  },
   listHeader: {
     zIndex: 10,
   },
 });
-
-const ItemSeparator = () => <View style={styles.separator} />;
 
 export const formatNumbers = (num) => {
   return num > 999 ? (num / 1000).toFixed(1) + "k" : num;
