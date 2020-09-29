@@ -13,3 +13,21 @@ export const REPOSITORY_INFO = gql`
     language
   }
 `;
+
+export const PAGE_INFO = gql`
+  fragment PageInfoData on PageInfo {
+    hasNextPage
+    totalCount
+    startCursor
+    endCursor
+  }
+`;
+
+export const REVIEW_INFO = gql`
+  fragment ReviewInfo on Review {
+    id
+    rating
+    createdAt
+    text
+  }
+`;
