@@ -24,9 +24,8 @@ const styles = StyleSheet.create({
   },
   menu: {
     width: "75%",
-    top: "45%",
+    top: "40%",
     left: "12.5%",
-    transform: [{ translateY: "-50% " }],
   },
   btn: {
     display: "flex",

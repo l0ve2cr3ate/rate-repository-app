@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   input: {
     marginHorizontal: 15,
     marginTop: 15,
+    elevation: 0
   },
 });
 

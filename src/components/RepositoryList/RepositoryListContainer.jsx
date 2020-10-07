@@ -7,6 +7,7 @@ import RepositoryListHeader from "./RepositoryListHeader";
 const styles = StyleSheet.create({
   listHeader: {
     zIndex: 10,
+    elevation:1
   },
 });
 
