@@ -7,6 +7,15 @@ Learn how to build native Android and iOS mobile applications with JavaScript an
 For more info see the course website: <br>
 https://fullstackopen.com/en/part10
 
+
+[Course Notes part 10a](#notes-a.-introduction-to-react-native) <br>
+[Course Notes part 10b](#notes-part-b.-react-native-basics) <br>
+[Course Notes part 10c](#notes-part-c.-communicating-with-the-server) <br>
+[Course Notes part 10d](#notes-part-d.-testing-and-extending-our-application) <br>
+[Course Review part 10 - React Native](#course-review-part-10-react-native) <br>
+
+
+
 ### Exercises a. Introduction to React Native
 
 Exercise 10.1 <br>
@@ -820,3 +829,423 @@ const useSignIn = () => {
   // ...
 };
 ```
+
+### Exercises part d. Testing and extending our application
+
+Exercises 10.17. - 10.18. <br>
+Exercise 10.17: testing the reviewed repositories list <br>
+Implement a test that ensures that the RepositoryListContainer component renders repository's name, description, language, forks count, stargazers count, rating average, and review count correctly. Remember that you can use the toHaveTextContent matcher to check whether a node has certain textual content. You can use the getAllByTestId query to get all nodes with a certain testID prop as an array. If you are unsure what is being rendered, use the debug function to see the serialized rendering result. <br>
+
+Use this as a base for your test: <br>
+
+```javascript
+describe("RepositoryList", () => {
+  describe("RepositoryListContainer", () => {
+    it("renders repository information correctly", () => {
+      const repositories = {
+        pageInfo: {
+          totalCount: 8,
+          hasNextPage: true,
+          endCursor:
+            "WyJhc3luYy1saWJyYXJ5LnJlYWN0LWFzeW5jIiwxNTg4NjU2NzUwMDc2XQ==",
+          startCursor: "WyJqYXJlZHBhbG1lci5mb3JtaWsiLDE1ODg2NjAzNTAwNzZd",
+        },
+        edges: [
+          {
+            node: {
+              id: "jaredpalmer.formik",
+              fullName: "jaredpalmer/formik",
+              description: "Build forms in React, without the tears",
+              language: "TypeScript",
+              forksCount: 1619,
+              stargazersCount: 21856,
+              ratingAverage: 88,
+              reviewCount: 3,
+              ownerAvatarUrl:
+                "https://avatars2.githubusercontent.com/u/4060187?v=4",
+            },
+            cursor: "WyJqYXJlZHBhbG1lci5mb3JtaWsiLDE1ODg2NjAzNTAwNzZd",
+          },
+          {
+            node: {
+              id: "async-library.react-async",
+              fullName: "async-library/react-async",
+              description: "Flexible promise-based React data loader",
+              language: "JavaScript",
+              forksCount: 69,
+              stargazersCount: 1760,
+              ratingAverage: 72,
+              reviewCount: 3,
+              ownerAvatarUrl:
+                "https://avatars1.githubusercontent.com/u/54310907?v=4",
+            },
+            cursor:
+              "WyJhc3luYy1saWJyYXJ5LnJlYWN0LWFzeW5jIiwxNTg4NjU2NzUwMDc2XQ==",
+          },
+        ],
+      };
+
+      // Add your test code here
+    });
+  });
+});
+```
+
+You can put the test file where you please. However, it is recommended to follow one of the ways of organizing test files introduced earlier. Use the repositories variable as the repository data for the test. There should be no need to alter the variable's value. Note that the repository data contains two repositories, which means that you need to check that both repositories' information is present. <br>
+
+Exercise 10.18: testing the sign in form <br>
+Implement a test that ensures that filling the sign in form's username and password fields and pressing the submit button will call the onSubmit handler with correct arguments. The first argument of the handler should be an object representing the form's values. You can ignore the other arguments of the function. Remember that the fireEvent methods can be used for triggering events and a mock function for checking whether the onSubmit handler is called or not. <br>
+
+You don't have to test any Apollo Client or AsyncStorage related code which is in the useSignIn hook. As in the previous exercise, extract the pure code into its own component and test it in the test. <br>
+
+Note that Formik's form submissions are asynchronous so expecting the onSubmit function to be called immediately after pressing the submit button won't work. You can get around this issue by making the test function an async function using the async keyword and using the React Native Testing Library's waitFor helper function. The waitFor function can be used to wait for expectations to pass. If the expectations don't pass within a certain period, the function will throw an error. Here is a rough example of how to use it: <br>
+
+```javascript
+import React from "react";
+import { render, fireEvent, waitFor } from "@testing-library/react-native";
+// ...
+
+describe("SignIn", () => {
+  describe("SignInContainer", () => {
+    it("calls onSubmit function with correct arguments when a valid form is submitted", async () => {
+      // render the SignInContainer component, fill the text inputs and press the submit button
+
+      await waitFor(() => {
+        // expect the onSubmit function to have been called once and with a correct first argument
+      });
+    });
+  });
+});
+```
+
+Exercises 10.19. - 10.24. <br>
+Exercise 10.19: the single repository view <br>
+Implement a view for a single repository, which contains the same repository information as in the reviewed repositories list but also a button for opening the repository in GitHub. It would be a good idea to reuse the RepositoryItem component used in the RepositoryList component and display the GitHub repository button for example based on a boolean prop. <br>
+
+The repository's URL is in the url field of the Repository type in the GraphQL schema. You can fetch a single repository from the Apollo server with the repository query. The query has a single argument, which is the id of the repository. Here's a simple example of the repository query: <br>
+
+```javascript
+{
+  repository(id: "jaredpalmer.formik") {
+    id
+    fullName
+    url
+  }
+}
+```
+
+As always, test your queries in the GraphQL playground first before using them in your application. If you are unsure about the GraphQL schema or what are the available queries, open either the docs or schema tab in the GraphQL playground. If you have trouble using the id as a variable in the query, take a moment to study the Apollo Client's documentation on queries. <br>
+
+To learn how to open a URL in a browser, read the Expo's Linking API documentation. You will need this feature while implementing the button for opening the repository in GitHub. <br>
+
+The view should have its own route. It would be a good idea to define the repository's id in the route's path as a path parameter, which you can access by using the useParams hook. The user should be able to access the view by pressing a repository in the reviewed repositories list. You can achieve this by for example wrapping the RepositoryItem with a TouchableOpacity component in the RepositoryList component and using history.push method to change the route in an onPress event handler. You can access the history object with the useHistory hook. <br>
+
+Exercise 10.20: repository's review list <br>
+Now that we have a view for a single repository, let's display repository's reviews there. Repository's reviews are in the reviews field of the Repository type in the GraphQL schema. reviews is a similar paginated list as in the repositories query. Here's an example of getting reviews of a repository:
+
+```javascript
+{
+  repository(id: "jaredpalmer.formik") {
+    id
+    fullName
+    reviews {
+      edges {
+        node {
+          id
+          text
+          rating
+          createdAt
+          user {
+            id
+            username
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Review's text field contains the textual review, rating field a numeric rating between 0 and 100, and createdAt the date when the review was created. Review's user field contains the reviewer's information, which is of type User. <br>
+
+We want to display reviews as a scrollable list, which makes FlatList a suitable component for the job. To display the previous exercise's repository's information at the top of the list, you can use the FlatList components ListHeaderComponent prop. You can use the ItemSeparatorComponent to add some space between the items like in the RepositoryList component. Here's an example of the structure:
+
+```javascript
+const RepositoryInfo = ({ repository }) => {
+  // Repository's information implemented in the previous exercise
+};
+
+const ReviewItem = ({ review }) => {
+  // Single review item
+};
+
+const SingleRepository = () => {
+  // ...
+
+  return (
+    <FlatList
+      data={reviews}
+      renderItem={({ item }) => <ReviewItem review={item} />}
+      keyExtractor={({ id }) => id}
+      ListHeaderComponent={() => <RepositoryInfo repository={repository} />}
+      // ...
+    />
+  );
+};
+
+export default SingleRepository;
+```
+
+The date under the reviewer's username is the creation date of the review, which is in the createdAt field of the Review type. The date format should be user-friendly such as date.month.year. You can for example install the date-fns library and use the format function for formatting the creation date. <br>
+
+The round shape of the rating's container can be achieved with the borderRadius style property. You can make it round by fixing the container's width and height style property and setting the border-radius as width / 2. <br>
+
+Exercise 10.21: the review form <br>
+Implement a form for creating a review using Formik. The form should have four fields: repository owner's GitHub username (for example "jaredpalmer"), repository's name (for example "formik"), a numeric rating, and a textual review. Validate the fields using Yup schema so that it contains the following validations: <br>
+
+- Repository owner's username is a required string
+- Repository's name is a required string
+- Rating is a required number between 0 and 100
+- Review is a optional string
+  Explore Yup's documentation to find suitable validators. Use sensible error messages with the validators. The validation message can be defined as the validator method's message argument. You can make the review field expand to multiple lines by using TextInput component's multiline prop. <br>
+
+You can create a review using the createReview mutation. Check this mutation's arguments in the docs tab in the GraphQL playground. You can use the useMutation hook to send a mutation to the Apollo Server. <br>
+
+After a successful createReview mutation, redirect the user to the repository's view you implemented in the previous exercise. This can be done with the history.push method after you have obtained the history object using the useHistory hook. The created review has a repositoryId field which you can use to construct the route's path. <br>
+
+To prevent getting cached data with the repository query in the single repository view, use the cache-and-network fetch policy in the query. It can be used with the useQuery hook like this: <br>
+
+```javascript
+useQuery(GET_REPOSITORY, {
+  fetchPolicy: "cache-and-network",
+  // Other options
+});
+```
+
+Note that only _an existing public GitHub repository_ can be reviewed and a user can review the same repository _only once_. You don't have to handle these error cases, but the error payload includes specific codes and messages for these errors. You can try out your implementation by reviewing one of your own public repositories or any other public repository. <br>
+
+The review form should be accessible through the app bar. Create a tab to the app bar with a label "Create a review". This tab should only be visible to users who have signed in. You will also need to define a route for the review form. <br>
+
+Exercise 10.22: the sign up form <br>
+Implement a sign up form for registering a user using Formik. The form should have three fields: username, password, and password confirmation. Validate the form using Yup schema so that it contains the following validations: <br>
+
+- Username is a required string with a length between 1 and 30
+- Password is a required string with a length between 5 and 50
+- Password confirmation matches the password
+  The password confirmation field's validation can be a bit tricky, but it can be done for example by using the oneOf and ref methods like suggested in [this issue](https://github.com/formium/formik/issues/90#issuecomment-354873201). <br>
+  You can create a new user by using the createUser mutation. Find out how this mutation work by exploring the documentation in the GraphQL playground. After a successful createUser mutation, sign the created user in by using the useSignIn hook as we did in the sign in the form. After the user has been signed in, redirect the user to the reviewed repositories list view. <br>
+
+The user should be able to access the sign-up form through the app bar by pressing a "Sign up" tab. This tab should only be visible to users that aren't signed in. <br>
+
+Exercise 10.23: sorting the reviewed repositories list <br>
+At the moment repositories in the reviewed repositories list are ordered by the date of repository's first review. Implement a feature that allows users to select the principle, which is used to order the repositories. The available ordering principles should be: <br>
+
+- Latest repositories. The repository with the latest first review is on the top of the list. This is the current behavior and should be the default principle.
+- Highest rated repositories. The repository with the highest average rating is on the top of the list.
+- Lowest rated repositories. The repository with the lowest average rating is on the top of the list.
+
+The repositories query used to fetch the reviewed repositories has an argument called orderBy, which you can use to define the ordering principle. The argument has two allowed values: CREATEDAT (order by the date of repository's first review) and RATINGAVERAGE, (order by the repository's average rating). The query also has an argument called orderDirection which can be used to change the order direction. The argument has two allowed values: ASC (ascending, smallest value first) and DESC (descending, biggest value first). <br>
+
+The selected ordering principle state can be maintained for example using the React's useState hook. The variables used in the repositories query can be given to the useRepositories hook as an argument. <br>
+
+You can use for example react-native-picker library, or React Native Paper library's Menu component to implement the ordering principle's selection. You can use the FlatList component's ListHeaderComponent prop to provide the list with a header containing the selection component. <br>
+
+Exercise 10.24: filtering the reviewed repositories list <br>
+The Apollo Server allows filtering repositories using the repository's name or the owner's username. This can be done using the searchKeyword argument in the repositories query. Here's an example of how to use the argument in a query:
+
+```javascript
+{
+  repositories(searchKeyword: "ze") {
+    edges {
+      node {
+        id
+        fullName
+      }
+    }
+  }
+}
+```
+
+Implement a feature for filtering the reviewed repositories list based on a keyword. Users should be able to type in a keyword into a text input and the list should be filtered as the user types. You can use a simple TextInput component or something a bit fancier such as React Native Paper's Searchbar component as the text input. Put the text input component in the FlatList component's header. <br>
+
+To avoid a multitude of unnecessary requests while the user types the keyword fast, only pick the latest input after a short delay. This technique is often referred to as debouncing. use-debounce library is a handy hook for debouncing a state variable. Use it with a sensible delay time, such as 500 milliseconds. Store the text input's value by using the useState hook and the pass the debounced value to the query as the value of the searchKeyword argument. <br>
+
+You probably face an issue that the text input component loses focus after each keystroke. This is because the content provided by the ListHeaderComponent prop is constantly unmounted. This can be fixed by turning the component rendering the FlatList component into a class component and defining the header's render function as a class component like this: <br>
+
+```javascript
+export class RepositoryListContainer extends React.Component {
+  renderHeader = () => {
+    // this.props contains the component's props
+    const props = this.props;
+
+    // ...
+
+    return (
+      <RepositoryListHeader
+      // ...
+      />
+    );
+  };
+
+  render() {
+    return (
+      <FlatList
+        // ...
+        ListHeaderComponent={this.renderHeader}
+      />
+    );
+  }
+}
+```
+
+For more info about the exercises for part d. Testing and extending our application, see: <br>
+https://fullstackopen.com/en/part10/testing_and_extending_our_application
+
+### Notes part d. Testing and extending our application
+
+**Testing RN apps** <br>
+Expo provides a set of Jest config, _jest-expo preset_, for testiong Expo based React Native app with Jest. To use ESLint in Jest file you will need to add `eslint-plugin-jest`. <br>
+To use jest-expo preset add following Jest config to `package.json`:
+
+```javascript
+{
+  // ...
+  "scripts": {
+    // other scripts...
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*|react-router-native)"
+    ]
+  },
+  // ...
+}
+```
+
+- add test script.
+  `transform` option tells Jest to transform `.js` and `.jsx` files with Babel compiler. `transformIgnorePatterns` option is for ignoring certain directories in the node_modules directory while transforming files. <br>
+
+To use `eslint-plugin-jest` in ESLint add it to plugins and extensions array in `.eslintrc` file: <br>
+
+```javascript
+{
+  "plugins": ["react", "jest"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:jest/recommended"],
+ // ...
+}
+```
+
+To test if everything is working, create `__tests__` directory in `src` directory and create `example.js` file with simple test: <br>
+
+```javascript
+describe("Example", () => {
+  it("works", () => {
+    expect(1).toBe(1);
+  });
+});
+```
+
+Run the command `npm test` to check if it works. <br>
+
+**Organizing tests** <br>
+
+- Organizing test files in a single `__tests__` directory. When choosing this approach, it is recommended to put test files in corresponding subdirectories: Tests for components in components directory, tests for utils in utils directory. This will create the following file structure: <br>
+
+```javascript
+src/
+  __tests__/
+    components/
+      AppBar.js
+      RepositoryList.js
+      ...
+    utils/
+      authStorage.js
+      ...
+    ...
+```
+
+- Organize tests near implementation: test file for for example AppBar component is in the same directory as the component itself. This will create the following file structure:
+
+```javascript
+src/
+  components/
+    AppBar/
+      AppBar.test.jsx
+      index.jsx
+    ...
+  ...
+```
+
+**Note:** For Jest to be able to find your test file, you need tp put them in `__test__` directory, use `.test` or `.spec` suffix, or [manually configure global patterns](https://jestjs.io/docs/en/configuration#testmatch-arraystring). <br>
+
+**Testing components** <br>
+Testing components requires a way to serialize a component's render output and simulate firing different kind of events. React Native Testing Library can be used for this. It is the RN version of React Testing Library. Both share a very similar API. In addition to React Native Testing Library, you will need a set of RN specific Jest matchers such as `toHaveTextContent`. These matchers are provided by `jest-native` library. To be able to use these matchers, you need to extend Jest's `expect` object: <br>
+
+- create file `setupTests.js` in the root directory of your project and add:
+
+```javascript
+import "@testing-library/jest-native/extend-expect";
+```
+
+- In `package.json` configure `setupTests.js` file as setup file in Jest's config: <br>
+
+```javascript
+"setupFilesAfterEnv": ["<rootDir>/setupTests.js"]
+```
+
+`queries` and `firing_events` are main concepts of React Native Testing Library. _Queries_ are used to extract a set of nodes from component that is rendered using the render function:
+
+```javascript
+describe("Greeting", () => {
+  it("renders a greeting message based on the name prop", () => {
+    const { getByTestId } = render(<Greeting name="Kalle" />);
+
+    expect(getByTestId("greetingText")).toHaveTextContent("Hello Kalle!");
+  });
+});
+```
+
+The render function returns queries + additional helpers such as debug function, which prints rendered React tree in user-friendly format. _Events_ can be fired in a provided node using `fireEvent` object's method:
+
+```javascript
+describe("Form", () => {
+  it("calls function provided by onSubmit prop after pressing the submit button", () => {
+    const onSubmit = jest.fn();
+    const { getByTestId } = render(<Form onSubmit={onSubmit} />);
+
+    fireEvent.changeText(getByTestId("usernameField"), "kalle");
+    fireEvent.changeText(getByTestId("passwordField"), "password");
+    fireEvent.press(getByTestId("submitButton"));
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+
+    // onSubmit.mock.calls[0][0] contains the first argument of the first call
+    expect(onSubmit.mock.calls[0][0]).toEqual({
+      username: "kalle",
+      password: "password",
+    });
+  });
+});
+```
+
+_Mock functions_ are functions with preprogrammed behavior, such as a specific return value.
+
+**Handling dependencies** <br>
+_Pure_ components are easier to test. They don't depend on _side effects_ like network requests or using a native API like AsyncStorage. In `RepositoryList` component has one side effect: a graphQL query for fetching reviewed repositories with useRepositories hook. One way to test this component is to mock Apollo Client's response. A more simple way is to assume the useRepositories hook works as intended (preferably through testing it) and extract the components 'pure' code into another component, which can be tested easier.
+
+**Cursor-based pagination** <br>
+When an API needs to return an ordered list of items of a collection, usually a subset of items is returned to reduce bandwidth and decrease memory usage of client app. The subset can be parameterized, so the client can request a certain number of items of the list after a certain index --> _pagination_. When items can be requested after a certain item defined by a _cursor_ it is called _cursor-based pagination_. <br> _Cursor:_ serialized presentation of item in ordered list.
+Relative cursor based pagination remembers where you where, so the next request will continue where the previous left off. Disadvantage: you can no longer jump to a specific page. The easiest way to do relative cursor based pagination is to remember the id of het last item from the last page you where on. But this requires results to be stored by id. Sorting by other criteria can be done by memorizing last value of field being sorting. <br>
+
+**Infinite scrolling**
+--> fetch a set of items <br>
+--> when user reaches last item, fetch next set of items after last item <br>
+`FlatList` component has `onEndReached` prop, which will call provided function once user has scrolled to last item on the list. The `fetchMore` function of `useQuery` hook can be used to fetch more data at the end of the list.
+
+### Course Review part 10 React Native
+
