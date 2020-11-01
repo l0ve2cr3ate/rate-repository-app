@@ -7,14 +7,12 @@ Learn how to build native Android and iOS mobile applications with JavaScript an
 For more info see the course website: <br>
 https://fullstackopen.com/en/part10
 
-
 [Course Notes part 10a](#notes-a.-introduction-to-react-native) <br>
 [Course Notes part 10b](#notes-part-b.-react-native-basics) <br>
 [Course Notes part 10c](#notes-part-c.-communicating-with-the-server) <br>
 [Course Notes part 10d](#notes-part-d.-testing-and-extending-our-application) <br>
+[Screenshots of the app created during the course](#screenshots-of-the-app-created-during-the-course) <br>
 [Course Review part 10 - React Native](#course-review-part-10-react-native) <br>
-
-
 
 ### Exercises a. Introduction to React Native
 
@@ -1247,26 +1245,44 @@ Relative cursor based pagination remembers where you where, so the next request 
 --> when user reaches last item, fetch next set of items after last item <br>
 `FlatList` component has `onEndReached` prop, which will call provided function once user has scrolled to last item on the list. The `fetchMore` function of `useQuery` hook can be used to fetch more data at the end of the list.
 
+### Screenshots of the app created during the course
+
+<img src="./screenshots/sign-in-form.PNG" alt="sign-in-form" width="175"/>
+<img src="./screenshots/sign-in-with-errors.PNG" alt="sign-in-form-with-errors" width="175"/>
+<img src="./screenshots/repositories-list.PNG" alt="repositories-list" width="175"/>
+<img src="./screenshots/create-review-form.PNG" alt="create-review-form" width="175"/>
+<img src="./screenshots/create-review-form-with-errors.PNG" alt="create-review-form-with-errors" width="175"/>
+<img src="./screenshots/sort-repositories.PNG" alt="sort-repositories-modal" width="175"/>
+<img src="./screenshots/sort-repositories-by-highest-rating.PNG" alt="sort-repositories-by-highest-rating" width="175"/>
+<img src="./screenshots/filter-repositories.PNG" alt="filter-repositories" width="175"/>
+<img src="./screenshots/single-repository-view.PNG" alt="single-repository-view" width="175"/>
+<img src="./screenshots/my-reviews-view.PNG" alt="my-reviews-view" width="175"/>
+<img src="./screenshots/delete-review-from-my-reviews.PNG" alt="delete-review-from-my-reviews" width="175"/>
+
 ### Course Review part 10 React Native
+
 Course part 10 about React Native is at the time of writing (14 October 2020) the newest addition to the Fullstack Open curriculum. It was added in September 2020. This course part was added just when I was finishing up part 9 of the course, so great timing :-) <br>
 
 In part 10 of Fullstack Open you will learn to build an Android and iOS mobile app using React Native and Expo. This part is a bit different from the rest of the course. You will build a mobile app following instructions, and in the exercises you will implement additional features in this same app. While in most of the previous parts of the course you did build a different app during the instructions and in the exercises. I personally don't have a reference for either of those, except maybe that you can build more features for one app, which can give you a more pollished product.
 
 **4 parts** <br>
-Part  is divided into 4 parts: 
+Part is divided into 4 parts:
+
 - Introduction to React Native
 - React Native basics
 - Communicating with the Server
 - Testing and extending your app
 
 ### Prerequisits
- - basic Javascript knowledge
- - basic React knowledge
- - basic graphQL knowledge
+
+- basic Javascript knowledge
+- basic React knowledge
+- basic graphQL knowledge
 
 It is recommended to complete part 1,2,5,7 and 8 of Fullstack Open before starting part 10.
 
 ### What you will learn
+
 Part 10 a. Introduction to React Native explains how to setup a React Native app using Expo. <br>
 In part 10 b. React Native Basics you will learn about core React Native components, like `<View>` and `<Text>`. In this part you will learn how to use the `FlatList` component, and how to style your React native app using a theme. You will also use `react router native` for routing, and `formik` for handling form state and validation (with `Yup`). <br>
 In part 10 c. Communicating with the server you will learn about HTTP requests in React Native, how to use `Apollo Client`, how to store data on a user's device, and how to create a custom hook for data fetching. <br>
@@ -1274,29 +1290,33 @@ Part 10 d. Testing and extending our application is the largest subpart of part 
 
 Above summary of what you will learn isn't an exhaustive list.
 
+### The app you will be building
+During the course you will be building an Github repository rating app, in which users can rate Github repositories. The backend is created for you. You will be building a Sign up form, a Sign in form and a Create Review form. You will also display error messages when required input fields are missing, or wrong. You will use Formik for handling form state, together with Yup for validation. You will create a view with a scrollable list of reviewed repositories, a single repository view, and a my repositories view, containing the reviewed repositories of the user. You will be implementing features like infinite scrolling, sorting the reviewed repositories list, and filtering the reviewed repositories list. You can see screenshots of the app I have built during the course [here](#screenshots-of-the-app-created-during-the-course).
+
 ### Quality Content
+
 The quality of the course content is great. This is a university course, where people with Finnish social security number can earn 2 credits for (just for part 10).
 The course is up-to-date. There is already an issue created for upgrading the course content to use `@apollo/client` instead of `apollo-boost`, upgrade Expo to `Expo SDK 39`, and replace `Touchable` components with `Pressable` component.
 
 ### No Videos
-This course provides you with written information on how to implement certain features. Then you build these features yourself, and after that you will complete exercises where you are asked to build a similar feature yourself, or extend on something you have build before. This is not a course where someone takes your hand and tells you what to do. But the course does provide enough information for you to be able to complete the exercises and learn a lot. Sometimes links to documentation or other information are given, so you can study that information yourself. The course only has written content, no videos, and it is self-paced. 
+
+This course provides you with written information on how to implement certain features. Then you build these features yourself, and after that you will complete exercises where you are asked to build a similar feature yourself, or extend on something you have build before. This is not a course where someone takes your hand and tells you what to do. But the course does provide enough information for you to be able to complete the exercises and learn a lot. Sometimes links to documentation or other information are given, so you can study that information yourself. The course only has written content, no videos, and it is self-paced.
 
 ### Certificate
+
 You can earn a certificate after completing part 10 of Fullstack Open. You can find more information about it [here](https://fullstackopen.com/en/part10/introduction_to_react_native) <br>
 
-
 ### &#10084; &#10084; &#10084; this Course
+
 This course, together with the other parts of the Fullstack Open course is one of my most liked courses. I love that this course is not a simple walkthrough, but gives you some challenges. I am also happy that the course content uses hooks, and is up-to-date. People can do pull requests to improve the course.
+I like it that apart from a clear exercise description, the course also provides you with screenshots about what you should build.
 
 ### Improvements
+
 It would be nice if the course would use `react navigation` instead of `react-router-native`. The course does mentions the library, but unfortunately it won't be used in the app you will be building. <br>
 
 The other thing I found a bit confusing was the part where you need to extract the side effects from your component so you can test it more easily. The outer component which now is responsible for fetching data gets the name `RepositoryList`, while the inner component which is responsible for rendering the `FlatList` is called `RepositoryListContainer`. I would have found it more logical to switch the names. I see a container like a wrapper, and a container can (sometimes) also be seen as a data fetching/state handling component. This is just a minor point.
 
 ### Summary
-If you have some experience with Javascript, React and graphQL and want to go through some high quality course material, this is a course for you. If you love getting certificates, you are in the right place. If you expect video content, this course in NOT for you. If you don't want to put in the effort to work through the exercises, this course is NOT for you. 
 
-
-
-
-
+If you have some experience with Javascript, React and graphQL and want to go through some high quality course material, this is a course for you. If you love getting certificates, you are in the right place. If you expect video content, this course in NOT for you. If you don't want to put in the effort to work through the exercises, this course is NOT for you.
