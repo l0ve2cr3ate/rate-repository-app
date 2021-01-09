@@ -13,6 +13,8 @@ https://fullstackopen.com/en/part10
 [Course Notes part 10d](#notes-part-d.-testing-and-extending-our-application) <br>
 [Screenshots of the app created during the course](#screenshots-of-the-app-created-during-the-course) <br>
 [Course Review part 10 - React Native](#course-review-part-10-react-native) <br>
+[Course Review Fullstack Open part 1-9](https://github.com/l0ve2cr3ate/fullstack-open-2020/blob/master/README.md#review-fullstack-open-2020) <br>
+[Course Review part 11 - CI/CD](https://github.com/l0ve2cr3ate/fullstack-open-part11-bloglist#course-review-part-11-fullstack-open) <br>
 
 ### Exercises a. Introduction to React Native
 
@@ -1261,7 +1263,7 @@ Relative cursor based pagination remembers where you where, so the next request 
 
 ### Course Review part 10 React Native
 
-Course part 10 about React Native is at the time of writing (14 October 2020) the newest addition to the Fullstack Open curriculum. It was added in September 2020. This course part was added just when I was finishing up part 9 of the course, so great timing :-) <br>
+Course part 10 about React Native was added in September 2020. This course part was added just when I was finishing up part 9 of the course, so great timing :-) <br>
 
 In part 10 of Fullstack Open you will learn to build an Android and iOS mobile app using React Native and Expo. This part is a bit different from the rest of the course. You will build a mobile app following instructions, and in the exercises you will implement additional features in this same app. While in most of the previous parts of the course you did build a different app during the instructions and in the exercises. I personally don't have a reference for either of those, except maybe that you can build more features for one app, which can give you a more pollished product.
 
